@@ -181,3 +181,178 @@ struct ShortcutRecorderView: View {
         }
     }
 }
+
+// MARK: - System "Start Dictation" Custom Shortcut Recorder Window
+
+final class SystemDictationShortcutRecorderWindowController: NSWindowController {
+    static let shared = SystemDictationShortcutRecorderWindowController()
+
+    private init() {
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 390, height: 220),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false
+        )
+        window.title = "Customize Start Dictation Shortcut"
+        window.center()
+        window.isReleasedWhenClosed = false
+        window.level = .floating
+        super.init(window: window)
+        window.contentView = NSHostingView(rootView: SystemDictationShortcutRecorderView(onClose: { [weak self] in
+            self?.close()
+        }))
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    func showRecorder() {
+        guard let window = window else { return }
+        NSApp.activate(ignoringOtherApps: true)
+        window.center()
+        window.makeKeyAndOrderFront(nil)
+    }
+}
+
+struct SystemDictationShortcutRecorderView: View {
+    @State private var isRecording = true
+    @State private var currentDisplay: String = DictationController.shared.currentSystemDictationShortcut().displayTitle
+    @State private var statusMessage: String = "Press a modifier key (⌘, ⌥, ⌃, or ⇧) + any key. Press Esc to cancel."
+    @State private var eventMonitor: Any?
+
+    var onClose: () -> Void
+
+    var body: some View {
+        VStack(spacing: 16) {
+            HStack(spacing: 10) {
+                Image(systemName: "mic.badge.plus")
+                    .font(.system(size: 24))
+                    .foregroundColor(.accentColor)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("System 'Start Dictation' Shortcut")
+                        .font(.headline)
+                    Text("Sets the macOS Dictation activation key in System Settings.")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                Spacer()
+            }
+
+            HStack {
+                Spacer()
+                Text(isRecording ? "Press keys now…" : currentDisplay)
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .foregroundColor(isRecording ? .accentColor : .primary)
+                    .padding(.vertical, 12)
+                    .padding(.horizontal, 24)
+                Spacer()
+            }
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color(NSColor.controlBackgroundColor))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(isRecording ? Color.accentColor : Color.secondary.opacity(0.3), lineWidth: isRecording ? 2 : 1)
+                    )
+            )
+            .onTapGesture {
+                if isRecording {
+                    stopRecording()
+                } else {
+                    startRecording()
+                }
+            }
+
+            Text(statusMessage)
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .frame(height: 28)
+
+            HStack(spacing: 12) {
+                Spacer()
+
+                Button(action: {
+                    if isRecording {
+                        stopRecording()
+                    } else {
+                        startRecording()
+                    }
+                }) {
+                    Text(isRecording ? "Cancel" : "Record Shortcut")
+                }
+
+                Button("Done") {
+                    stopRecording()
+                    onClose()
+                }
+                .keyboardShortcut(.defaultAction)
+            }
+        }
+        .padding(20)
+        .frame(width: 390, height: 220)
+        .onAppear {
+            currentDisplay = DictationController.shared.currentSystemDictationShortcut().displayTitle
+            startRecording()
+        }
+        .onDisappear {
+            stopRecording()
+        }
+    }
+
+    private func startRecording() {
+        removeMonitor()
+        isRecording = true
+        statusMessage = "Press a modifier key (⌘, ⌥, ⌃, or ⇧) + any key. Press Esc to cancel."
+
+        eventMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+            let keyCode = event.keyCode
+            if Int(keyCode) == kVK_Escape {
+                stopRecording()
+                statusMessage = "Recording cancelled."
+                return nil
+            }
+
+            let flags = event.modifierFlags.intersection([.command, .option, .control, .shift])
+            let isFunctionKey = (Int(keyCode) >= kVK_F1 && Int(keyCode) <= kVK_F12)
+            guard !flags.isEmpty || isFunctionKey else {
+                statusMessage = "Please include at least one modifier key (⌘, ⌥, ⌃, or ⇧)."
+                NSSound.beep()
+                return nil
+            }
+
+            let chars = event.charactersIgnoringModifiers ?? ""
+            let keyChar: UInt16 = chars.utf16.first ?? 0xFFFF
+            let rawMods = UInt(flags.rawValue)
+
+            let preset = SystemDictationShortcutPreset.custom(
+                keyChar: keyChar,
+                virtualKey: keyCode,
+                modifiers: rawMods,
+                displayString: ""
+            )
+            DictationController.shared.setSystemDictationShortcut(preset)
+            let updated = DictationController.shared.currentSystemDictationShortcut()
+            currentDisplay = updated.displayTitle
+            isRecording = false
+            removeMonitor()
+            statusMessage = "Saved Start Dictation shortcut: \(currentDisplay)"
+            return nil
+        }
+    }
+
+    private func stopRecording() {
+        isRecording = false
+        removeMonitor()
+    }
+
+    private func removeMonitor() {
+        if let monitor = eventMonitor {
+            NSEvent.removeMonitor(monitor)
+            eventMonitor = nil
+        }
+    }
+}
+
