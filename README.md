@@ -9,11 +9,11 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/atomikid/macos-dictation-menu/releases/latest">
-    <img src="https://img.shields.io/github/v/release/atomikid/macos-dictation-menu?label=Download%20Latest%20Release&color=007AFF&style=for-the-badge" alt="Download Latest Release">
+  <a href="Distribution/MacOS%20Dictation%20menu.dmg">
+    <img src="https://img.shields.io/badge/Download-.dmg-007AFF?style=for-the-badge&logo=apple" alt="Download .dmg">
   </a>
-  <a href="https://github.com/atomikid/macos-dictation-menu/releases/latest/download/DictationMenu.zip">
-    <img src="https://img.shields.io/badge/Direct%20Download-.zip-blue?style=for-the-badge&logo=apple" alt="Direct Download .zip">
+  <a href="https://github.com/atomikid/macos-dictation-menu/raw/main/Distribution/MacOS%20Dictation%20menu.dmg">
+    <img src="https://img.shields.io/badge/Direct%20Download-.dmg-blue?style=for-the-badge&logo=apple" alt="Direct Download .dmg">
   </a>
 </p>
 
@@ -23,9 +23,9 @@
 
 You can download the latest pre-built application directly:
 
-👉 **[Download DictationMenu.zip (Latest Release)](https://github.com/atomikid/macos-dictation-menu/releases/latest/download/DictationMenu.zip)**
+👉 **[Download MacOS Dictation menu.dmg](Distribution/MacOS%20Dictation%20menu.dmg)** ([Direct Download](https://github.com/atomikid/macos-dictation-menu/raw/main/Distribution/MacOS%20Dictation%20menu.dmg))
 
-1. Unzip the downloaded `DictationMenu.zip` archive.
+1. Open `Distribution/MacOS Dictation menu.dmg` (double-click the `.dmg` file to mount it).
 2. Drag `DictationMenu.app` into your `/Applications` folder.
 3. Open `DictationMenu.app` from `/Applications` (or Spotlight / Raycast).
 
