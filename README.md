@@ -9,9 +9,6 @@
 </p>
 
 <p align="center">
-  <a href="Distribution/MacOS%20Dictation%20menu.dmg">
-    <img src="https://img.shields.io/badge/Download-.dmg-007AFF?style=for-the-badge&logo=apple" alt="Download .dmg">
-  </a>
   <a href="https://github.com/atomikid/macos-dictation-menu/raw/main/Distribution/MacOS%20Dictation%20menu.dmg">
     <img src="https://img.shields.io/badge/Direct%20Download-.dmg-blue?style=for-the-badge&logo=apple" alt="Direct Download .dmg">
   </a>
@@ -23,13 +20,29 @@
 
 You can download the latest pre-built application directly:
 
-👉 **[Download MacOS Dictation menu.dmg](Distribution/MacOS%20Dictation%20menu.dmg)** ([Direct Download](https://github.com/atomikid/macos-dictation-menu/raw/main/Distribution/MacOS%20Dictation%20menu.dmg))
+👉 **[Direct Download: MacOS Dictation menu.dmg](https://github.com/atomikid/macos-dictation-menu/raw/main/Distribution/MacOS%20Dictation%20menu.dmg)**
 
-1. Open `Distribution/MacOS Dictation menu.dmg` (double-click the `.dmg` file to mount it).
+1. Open the downloaded `MacOS Dictation menu.dmg` file (double-click to mount it).
 2. Drag `DictationMenu.app` into your `/Applications` folder.
 3. Open `DictationMenu.app` from `/Applications` (or Spotlight / Raycast).
 
-> **Note on First Launch:** Since the app is built and distributed directly, macOS Gatekeeper may prompt you on first launch. Right-click (or Control-click) `DictationMenu.app` and choose **Open**, then click **Open** in the confirmation dialog.
+### 🛡️ First Launch & macOS Security (Unknown Developer)
+
+Since the app is built and distributed directly outside the Mac App Store, macOS may block it on first launch with a warning that the developer cannot be verified or is unknown.
+
+To allow `DictationMenu.app` to run:
+
+1. Open **System Settings** on your Mac.
+2. Navigate to **Privacy & Security** and scroll down to the **Security** section.
+3. Under Security, locate the message: *“DictationMenu.app” was blocked to protect your Mac.*
+4. Click the **Open Anyway** button next to it.
+5. In the confirmation dialog, click **Open** (and provide your Mac password or Touch ID if requested).
+
+<p align="center">
+  <img src="Resources/macos-security-open-anyway.png" width="600" alt="macOS Security - Open Anyway in System Settings">
+</p>
+
+> **Note:** This is only required once. Afterwards, DictationMenu will open directly without warnings.
 
 ---
 
